@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ইসলামী ফরায়েজ হিসাব</title>
+<style>
+ @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri&display=swap');
+  body {
+    font-family: 'Hind Siliguri', Kalpurush, Arial, sans-serif;
+    margin: 20px auto;
+    max-width: 900px;
+    background: #f9f9f9;
+    color: #222;
+    line-height: 1.5;
+  }
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #0b3d91;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 1rem;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus {
+    border-color: #0b3d91;
+    outline: none;
+  }
+
+  button {
+    background-color: #0b3d91;
+    color: #fff;
+    padding: 10px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #08306b;
+  }
+  hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid #ccc;
+  }
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 24px;
+  }
+  .heirs-input {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 15px;
+  }
+  .error {
+    color: #d32f2f;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .heirs-list {
+    background: #fff;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+  }
+  .heir-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 6px 4px;
+  }
+  .heir-item:last-child {
+    border-bottom: none;
+  }
+  .heir-item span {
+    font-weight: 600;
+    color: #0b3d91;
+  }
+  .btn-group {
+    display: flex;
+    gap: 8px;
+  }
+  .btn-small {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    font-weight: 600;
+    border: none;
+    background-color: #4a6cf7;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.25s;
+  }
+  .btn-small:hover {
+    background-color: #3753c8;
+  }
+  #calculateBtn {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 280px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+  }
+  #resultArea {
+    margin-top: 28px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 18px 24px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  }
+  #resultArea h3 {
+    color: #0b3d91;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  th {
+    background-color: #e7eaf6;
+    font-weight: 700;
+    color: #0b3d91;
+  }
+  tr:nth-child(even) {
+    background-color: #f7f9fc;
+  }
+  .mark-deceased-btn {
+    background-color: #d32f2f;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.25s;
+  }
+  .mark-deceased-btn:hover {
+    background-color: #9a2222;
+  }
+.developed-by {
+  font-size: 1.2rem;
+  color: #555555;
+  text-align: center;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  font-family: 'Hind Siliguri', Kalpurush, Arial, sans-serif;
+}
+
+  #deceased-list {
+    margin-top: 24px;
+  }
+  #deceased-list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
+  }
+  #deceased-list > div > span {
+    font-weight: 700;
+    color: #0b3d91;
+  }
+  /* বাটনগুলোর জন্য একসাইজ, চিকন এবং সুন্দর ডিজাইন */
+#saveDataBtn, #loadDataBtn, #clearDataBtn, #printBtn {
+  background-color: #0b3d91;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;          /* শুধু উঁচু হবে কিন্তু প্রস্থ হবে flex দ্বারা */
+  min-width: 120px;         /* মিনিমাম প্রস্থ */
+  flex: 1 1 120px;          /* নমনীয় প্রস্থ, যেখান থেকে কম বা বেশি হতে পারে */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* Clear বাটনের আলাদা রং */
+#clearDataBtn {
+  background-color: #d32f2f;
+}
+
+#clearDataBtn:hover {
+  background-color: #9a2222;
+}
+
+/* বাকি বাটন হোভার কালার */
+#saveDataBtn:hover, #loadDataBtn:hover, #printBtn:hover {
+  background-color: #08306b;
+}
+
+  #loadStatus {
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: green;
+  }
+  @media (max-width: 700px) {
+    .input-grid {
+      grid-template-columns: 1fr;
+    }
+    .heirs-input {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    #calculateBtn, #saveDataBtn, #loadDataBtn, #clearDataBtn {
+      width: 100%;
+      max-width: none;
+      margin: 12px 0;
+    }
+    #deceased-list > div {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    #deceased-list > div > span {
+      font-size: 1.1rem;
+    }
+  }
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #resultArea, #resultArea * {
+    visibility: visible;
+  }
+  #resultArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    font-size: 11pt !important;
+    line-height: 1.1 !important;
+  }
+  #resultArea p, #resultArea table, #resultArea table th, #resultArea table td {
+    margin: 2px 0 !important;
+    padding: 4px 6px !important;
+  }
+  #resultArea table {
+    font-size: 10pt !important;
+    border: 1px solid #000 !important;
+  }
+  th, td {
+    border: 1px solid #000 !important;
+  }
+}
+
+</style>
+
+</head>
+<body>
+  <button onclick="goBack()">← মেনুতে ফিরে যান</button>
+
+<script>
+  const { ipcRenderer } = require('electron');
+  function goBack() {
+    ipcRenderer.send('open-tool', 'home.html');
+  }
+</script>
+<body>
+
+<h1>ইসলামী ফরায়েজ হিসাব  </h1>
+<p class="developed-by">Developed by Nishat Software Lab</p>
+
+<div id="loadStatus"></div>
+
+<div class="input-grid">
+  <div>
+    <label for="deceasedName">মৃত ব্যক্তির নাম:</label>
+    <input type="text" id="deceasedName" placeholder="মৃত ব্যক্তির নাম লিখুন" />
+  </div>
+  <div>
+    <label for="totalProperty">মোট জমির পরিমাণ (যেমন চান):</label>
+    <input type="number" id="totalProperty" min="0" step="0.01" placeholder="জমির পরিমাণ লিখুন" />
+  </div>
+</div>
+
+<hr>
+
+<h3>ওয়ারিশ যুক্ত করুন</h3>
+<div class="heirs-input">
+  <div>
+    <label for="heirName">ওয়ারিশের নাম:</label>
+    <input type="text" id="heirName" placeholder="ওয়ারিশের নাম লিখুন" />
+  </div>
+  <div>
+    <label for="heirRelation">সম্পর্ক:</label>
+    <select id="heirRelation" >
+      <option value="" selected>-- নির্বাচন করুন --</option>
+      <option value="স্বামী">স্বামী</option>
+      <option value="স্ত্রী">স্ত্রী</option>
+      <option value="পিতা">পিতা</option>
+      <option value="মাতা">মাতা</option>
+      <option value="পুত্র">পুত্র</option>
+      <option value="কন্যা">কন্যা</option>
+      <option value="ভাই">ভাই</option>
+      <option value="বোন">বোন</option>
+    </select>
+  </div>
+  <div>
+    <button id="addHeirBtn" title="ওয়ারিশ যুক্ত করুন">+ যুক্ত করুন</button>
+  </div>
+</div>
+
+<div id="errorMsg" class="error" role="alert" aria-live="polite"></div>
+
+<div class="heirs-list" id="heirsList"><i>কোনো ওয়ারিশ যুক্ত হয়নি</i></div>
+
+<button id="calculateBtn" title="ফরায়েজ হিসাব করুন">হিসাব করুন</button>
+<div id="resultArea"></div>
+
+<hr>
+
+<h3>মৃত ব্যক্তিদের তালিকা</h3>
+<div style="display:flex; flex-wrap: wrap; gap: 10px; margin-bottom:10px;">
+  <button id="saveDataBtn" title="তথ্য সেভ করুন">সেভ করুন</button>
+  <button id="loadDataBtn" title="তথ্য লোড করুন">লোড করুন</button>
+  <button id="clearDataBtn" title="সব তথ্য মুছে ফেলুন">সব মুছুন</button>
+  <button id="printBtn" title="প্রিন্ট করুন">প্রিন্ট করুন</button>
+</div>
+
+<div id="deceased-list"></div>
+
+<script>
+let currentHeirs = [];
+let allDeceased = [];
+let editIndex = -1; // -1 মানে নতুন, >=0 মানে এডিট মোড
+
+function renderHeirs() {
+  const container = document.getElementById('heirsList');
+  if(currentHeirs.length === 0) {
+    container.innerHTML = '<i>কোনো ওয়ারিশ যুক্ত হয়নি</i>';
+    return;
+  }
+  container.innerHTML = '';
+  currentHeirs.forEach((h, i) => {
+    const div = document.createElement('div');
+    div.className = 'heir-item';
+
+    const span = document.createElement('span');
+    span.textContent = `${h.name} (${h.relation})`;
+    div.appendChild(span);
+
+    const btnGroup = document.createElement('div');
+    btnGroup.className = 'btn-group';
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'সম্পাদনা';
+    editBtn.title = 'ওয়ারিশ সম্পাদনা করুন';
+    editBtn.className = 'btn-small';
+    editBtn.onclick = () => editHeir(i);
+
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'মুছুন';
+    delBtn.title = 'ওয়ারিশ মুছুন';
+    delBtn.className = 'btn-small';
+    delBtn.onclick = () => {
+      currentHeirs.splice(i,1);
+      renderHeirs();
+    };
+
+    btnGroup.appendChild(editBtn);
+    btnGroup.appendChild(delBtn);
+    div.appendChild(btnGroup);
+
+    container.appendChild(div);
+  });
+}
+
+function editHeir(i) {
+  const heir = currentHeirs[i];
+  document.getElementById('heirName').value = heir.name;
+  document.getElementById('heirRelation').value = heir.relation;
+  currentHeirs.splice(i, 1);
+  renderHeirs();
+}
+
+function addHeir() {
+  const nameInput = document.getElementById('heirName');
+  const name = nameInput.value.trim();
+  const relation = document.getElementById('heirRelation').value;
+  const errorDiv = document.getElementById('errorMsg');
+  errorDiv.textContent = '';
+
+  if(!name || !relation) {
+    errorDiv.textContent = 'অনুগ্রহ করে নাম ও সম্পর্ক উভয় দিন।';
+    nameInput.focus();
+    return;
+  }
+
+  if(relation === 'স্বামী') {
+    if(currentHeirs.some(h => h.relation === 'স্বামী')) {
+      errorDiv.textContent = 'একজনের বেশি স্বামী হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+  if(relation === 'পিতা') {
+    if(currentHeirs.some(h => h.relation === 'পিতা')) {
+      errorDiv.textContent = 'একজনের বেশি পিতা হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+  if(relation === 'মাতা') {
+    if(currentHeirs.some(h => h.relation === 'মাতা')) {
+      errorDiv.textContent = 'একজনের বেশি মাতা হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+  if(relation === 'স্ত্রী') {
+    const wifeCount = currentHeirs.filter(h => h.relation === 'স্ত্রী').length;
+    if(wifeCount >=4) {
+      errorDiv.textContent = 'চারজনের বেশি স্ত্রী হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+
+  currentHeirs.push({name, relation});
+  renderHeirs();
+
+  nameInput.value = '';
+  document.getElementById('heirRelation').value = '';
+  nameInput.focus();
+}
+
+function adjustShares(shares) {
+  let total = 0;
+  for(const h of shares) total += h.share;
+  if(total === 1) return shares;
+  return shares.map(h => {
+    return {...h, share: h.share / total};
+  });
+}
+
+
+
+
+function editHeir(i) {
+  const heir = currentHeirs[i];
+  document.getElementById('heirName').value = heir.name;
+  document.getElementById('heirRelation').value = heir.relation;
+  currentHeirs.splice(i, 1);
+  renderHeirs();
+}
+
+function addHeir() {
+  const nameInput = document.getElementById('heirName');
+  const name = nameInput.value.trim();
+  const relation = document.getElementById('heirRelation').value;
+  const errorDiv = document.getElementById('errorMsg');
+  errorDiv.textContent = '';
+
+  if(!name || !relation) {
+    errorDiv.textContent = 'অনুগ্রহ করে নাম ও সম্পর্ক উভয় দিন।';
+    nameInput.focus();
+    return;
+  }
+
+  if(relation === 'স্বামী') {
+    if(currentHeirs.some(h => h.relation === 'স্বামী')) {
+      errorDiv.textContent = 'একজনের বেশি স্বামী হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+  if(relation === 'পিতা') {
+    if(currentHeirs.some(h => h.relation === 'পিতা')) {
+      errorDiv.textContent = 'একজনের বেশি পিতা হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+  if(relation === 'মাতা') {
+    if(currentHeirs.some(h => h.relation === 'মাতা')) {
+      errorDiv.textContent = 'একজনের বেশি মাতা হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+  if(relation === 'স্ত্রী') {
+    const wifeCount = currentHeirs.filter(h => h.relation === 'স্ত্রী').length;
+    if(wifeCount >=4) {
+      errorDiv.textContent = 'চারজনের বেশি স্ত্রী হতে পারে না।';
+      nameInput.focus();
+      return;
+    }
+  }
+
+  currentHeirs.push({name, relation});
+  renderHeirs();
+
+  nameInput.value = '';
+  document.getElementById('heirRelation').value = '';
+  nameInput.focus();
+}
+
+function adjustShares(shares) {
+  let total = 0;
+  for(const h of shares) total += h.share;
+  if(total === 1) return shares;
+  return shares.map(h => {
+    return {...h, share: h.share / total};
+  });
+}
+function calculateInheritance(deceasedName, totalProperty, heirs) {
+  if (!deceasedName || totalProperty <= 0 || heirs.length === 0) {
+    return { error: "সঠিক তথ্য দিন।" };
+  }
+
+  //function calculateInheritance(deceasedName, totalProperty, heirs) {
+  if (!deceasedName || totalProperty <= 0 || heirs.length === 0) {
+    return { error: "সঠিক তথ্য দিন।" };
+  }
+
+  // ওয়ারিশদের সংখ্যা গোনা
+  const counts = { husband:0, wives:0, father:0, mother:0, sons:0, daughters:0, brothers:0, sisters:0 };
+  heirs.forEach(h => {
+    switch(h.relation) {
+      case 'স্বামী': counts.husband++; break;
+      case 'স্ত্রী': counts.wives++; break;
+      case 'পিতা': counts.father++; break;
+      case 'মাতা': counts.mother++; break;
+      case 'পুত্র': counts.sons++; break;
+      case 'কন্যা': counts.daughters++; break;
+      case 'ভাই': counts.brothers++; break;
+      case 'বোন': counts.sisters++; break;
+    }
+  });
+
+  // সীমাবদ্ধতা চেক
+  if(counts.husband > 1) return { error: "একজনের বেশি স্বামী হতে পারে না।" };
+  if(counts.father > 1) return { error: "একজনের বেশি পিতা হতে পারে না।" };
+  if(counts.mother > 1) return { error: "একজনের বেশি মাতা হতে পারে না।" };
+  if(counts.wives > 4) return { error: "চারজনের বেশি স্ত্রী হতে পারে না।" };
+
+  let shares = heirs.map(h => ({ ...h, share: 0 }));
+  const hasChildren = (counts.sons + counts.daughters) > 0;
+
+  // স্বামী / স্ত্রী ভাগ
+  if(counts.husband === 1) {
+    shares.filter(s => s.relation === 'স্বামী').forEach(s => {
+      s.share = hasChildren ? 1/4 : 1/2;
+    });
+  }
+  if(counts.wives > 0) {
+    const wifeShare = hasChildren ? 1/8 : 1/4;
+    shares.filter(s => s.relation === 'স্ত্রী').forEach(s => {
+      s.share = wifeShare / counts.wives;
+    });
+  }
+
+  // মাতা ভাগ
+  if(counts.mother === 1) {
+    shares.filter(s => s.relation === 'মাতা').forEach(s => {
+      s.share = (hasChildren || (counts.brothers + counts.sisters) > 0) ? 1/6 : 1/3;
+    });
+  }
+
+  // পিতা ভাগ
+  if(counts.father === 1) {
+    if(hasChildren) {
+      shares.filter(s => s.relation === 'পিতা').forEach(s => {
+        s.share = 1/6;
+      });
+    } else {
+      // অবশিষ্ট অংশ পাবে
+      shares.filter(s => s.relation === 'পিতা').forEach(s => {
+        s.share = 0;
+      });
+    }
+  }
+
+  // কন্যাদের ভাগ (পুত্র না থাকলে)
+  if(counts.daughters > 0 && counts.sons === 0) {
+    if(counts.daughters === 1) {
+      shares.filter(s => s.relation === 'কন্যা').forEach(s => {
+        s.share = 1/2;
+      });
+    } else {
+      shares.filter(s => s.relation === 'কন্যা').forEach(s => {
+        s.share = (2/3) / counts.daughters;
+      });
+    }
+  }
+
+  // অবশিষ্ট অংশ হিসাব
+  let fixedSum = shares.reduce((sum, s) => sum + s.share, 0);
+  let residue = 1 - fixedSum;
+
+  // অবশিষ্ট ভাগ বণ্টন
+  if(residue > 0) {
+    if(counts.sons > 0) {
+      // ছেলে-মেয়ে ২:১ অনুপাতে ভাগ
+      let parts = counts.sons * 2 + counts.daughters;
+      shares.forEach(s => {
+        if(s.relation === 'পুত্র') s.share += residue * (2 / parts);
+        else if(s.relation === 'কন্যা') s.share += residue * (1 / parts);
+      });
+    } else if(counts.father === 1) {
+      // পুত্র না থাকলে পিতা অবশিষ্ট পায়
+      shares.filter(s => s.relation === 'পিতা').forEach(s => {
+        s.share += residue;
+      });
+    } else if((counts.brothers + counts.sisters) > 0) {
+      // ভাই-বোনেরা ২:১ অনুপাতে ভাগ পায়
+      let parts = counts.brothers * 2 + counts.sisters;
+      shares.forEach(s => {
+        if(s.relation === 'ভাই') s.share += residue * (2 / parts);
+        else if(s.relation === 'বোন') s.share += residue * (1 / parts);
+      });
+    }
+  }
+
+  // ব্লকিং (হিজব): পুত্র বা পিতা থাকলে ভাই-বোনদের শেয়ার ০
+  if(counts.sons > 0 || counts.father > 0) {
+    shares.forEach(s => {
+      if(s.relation === 'ভাই' || s.relation === 'বোন') s.share = 0;
+    });
+  }
+
+  // শেয়ার সমন্বয়
+  const totalShare = shares.reduce((sum, s) => sum + s.share, 0);
+  if(totalShare <= 0) return { error: "শেয়ার হিসাব করতে সমস্যা হয়েছে।" };
+
+  shares = shares.map(s => ({
+    ...s,
+    share: s.share / totalShare,
+    amount: ((s.share / totalShare) * totalProperty).toFixed(2)
+  }));
+
+  return { deceasedName, totalProperty, shares };
+}
+
+function showResult(result) {
+  const area = document.getElementById('resultArea');
+  if(result.error) {
+    area.innerHTML = `<p class="error">${result.error}</p>`;
+    return;
+  }
+  let html = `<h3>${result.deceasedName} এর মৃত্যুতে ওয়ারিশদের প্রাপ্য জমির হিসাব নিম্নরুপ</h3>`;
+  html += `<p>মোট জমির পরিমাণ: ${result.totalProperty}</p>`;
+  html += `<table><thead><tr>
+    <th>ওয়ারিশের নাম</th>
+    <th>সম্পর্ক</th>
+    <th>ভাগ (ভগ্নাংশ)</th>
+    <th>জমির পরিমাণ</th>
+    <th>কার্যক্রম</th>
+  </tr></thead><tbody>`;
+
+  result.shares.forEach((s, idx) => {
+    html += `<tr>
+      <td>${s.name}</td>
+      <td>${s.relation}</td>
+      <td>${(s.share*100).toFixed(2)}%</td>
+      <td>${s.amount}</td>
+      <td><button class="mark-deceased-btn" data-index="${idx}">মৃত দেখান</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  area.innerHTML = html;
+
+  // ‘মৃত দেখান’ বাটনের ইভেন্ট লিসেনার যুক্ত করা
+  document.querySelectorAll('.mark-deceased-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = btn.getAttribute('data-index');
+      const heirName = result.shares[i].name;
+      markHeirAsDeceased(heirName);
+    });
+  });
+}
+
+function markHeirAsDeceased(heirName) {
+  editIndex = -1; // নতুন হিসাব শুরু
+  document.getElementById('deceasedName').value = heirName;
+
+  let foundDeceased = null;
+  let heirShareAmount = null;
+
+  for (const deceased of allDeceased) {
+    if (deceased.result && deceased.result.shares) {
+      const heirData = deceased.result.shares.find(s => s.name === heirName);
+      if (heirData) {
+        foundDeceased = deceased;
+        heirShareAmount = heirData.amount;
+        break;
+      }
+    }
+  }
+
+  if(foundDeceased) {
+    document.getElementById('totalProperty').value = heirShareAmount;
+    currentHeirs = []; // এখানে ওয়ারিশের নাম ফাঁকা রাখা হবে
+  } else {
+    document.getElementById('totalProperty').value = '';
+    currentHeirs = [];
+  }
+
+  renderHeirs();
+  document.getElementById('resultArea').innerHTML = '';
+  window.scrollTo(0, 0);
+}
+
+
+
+document.getElementById('addHeirBtn').addEventListener('click', addHeir);
+
+document.getElementById('calculateBtn').addEventListener('click', () => {
+  const deceasedName = document.getElementById('deceasedName').value.trim();
+  const totalProperty = parseFloat(document.getElementById('totalProperty').value);
+  if(currentHeirs.length === 0) {
+    document.getElementById('errorMsg').textContent = 'অনুগ্রহ করে অন্তত একজন ওয়ারিশ যুক্ত করুন।';
+    return;
+  }
+  document.getElementById('errorMsg').textContent = '';
+
+  const result = calculateInheritance(deceasedName, totalProperty, currentHeirs);
+  if(result.error) {
+    document.getElementById('errorMsg').textContent = result.error;
+    return;
+  }
+
+  // হিসাব শেষে ডেটা সেভ করুন
+  if(editIndex >= 0) {
+    allDeceased[editIndex] = { deceasedName, totalProperty, heirs: [...currentHeirs], result };
+  } else {
+    allDeceased.push({ deceasedName, totalProperty, heirs: [...currentHeirs], result });
+  }
+  editIndex = -1;
+
+  showResult(result);
+  renderDeceasedList();
+});
+
+function renderDeceasedList() {
+  const container = document.getElementById('deceased-list');
+  container.innerHTML = '';
+  if(allDeceased.length === 0) {
+    container.innerHTML = '<i>কোনো মৃত ব্যক্তি যুক্ত হয়নি</i>';
+    return;
+  }
+  allDeceased.forEach((d, i) => {
+    const div = document.createElement('div');
+    div.innerHTML = `<span>${d.deceasedName} (মোট জমি: ${d.totalProperty})</span> 
+      <div class="btn-group">
+        <button title="সম্পাদনা" class="btn-small" onclick="editDeceased(${i})">সম্পাদনা</button>
+        <button title="মুছুন" class="btn-small" onclick="deleteDeceased(${i})">মুছুন</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function editDeceased(i) {
+  const d = allDeceased[i];
+  editIndex = i;
+  document.getElementById('deceasedName').value = d.deceasedName;
+  document.getElementById('totalProperty').value = d.totalProperty;
+  currentHeirs = [...d.heirs];
+  renderHeirs();
+  showResult(d.result);
+  window.scrollTo(0, 0);
+}
+
+function deleteDeceased(i) {
+  if(!confirm('আপনি কি নিশ্চিত এই মৃত ব্যক্তির তথ্য মুছে ফেলতে চান?')) return;
+  allDeceased.splice(i,1);
+  renderDeceasedList();
+  document.getElementById('resultArea').innerHTML = '';
+  if(editIndex === i) {
+    editIndex = -1;
+    document.getElementById('deceasedName').value = '';
+    document.getElementById('totalProperty').value = '';
+    currentHeirs = [];
+    renderHeirs();
+  }
+}
+
+document.getElementById('saveDataBtn').addEventListener('click', () => {
+  if(allDeceased.length === 0) {
+    alert('সেভ করার জন্য কোনো তথ্য নেই।');
+    return;
+  }
+  localStorage.setItem('allDeceasedData', JSON.stringify(allDeceased));
+  document.getElementById('loadStatus').textContent = 'তথ্য সেভ হয়েছে।';
+  setTimeout(() => document.getElementById('loadStatus').textContent = '', 3000);
+});
+
+
+document.getElementById('loadDataBtn').addEventListener('click', () => {
+  const data = localStorage.getItem('allDeceasedData');
+  if(!data) {
+    alert('লোড করার জন্য কোনো তথ্য নেই।');
+    return;
+  }
+  allDeceased = JSON.parse(data);
+  renderDeceasedList();
+  document.getElementById('loadStatus').textContent = 'তথ্য লোড হয়েছে।';
+  setTimeout(() => document.getElementById('loadStatus').textContent = '', 3000);
+});
+
+
+document.getElementById('clearDataBtn').addEventListener('click', () => {
+  if(!confirm('আপনি কি নিশ্চিত সব তথ্য মুছে ফেলতে চান?')) return;
+  allDeceased = [];
+  localStorage.removeItem('allDeceasedData');
+  renderDeceasedList();
+  document.getElementById('resultArea').innerHTML = '';
+  document.getElementById('deceasedName').value = '';
+  document.getElementById('totalProperty').value = '';
+  currentHeirs = [];
+  renderHeirs();
+});
+
+function renderDeceasedList() {
+  const container = document.getElementById('deceased-list');
+  container.innerHTML = '';
+  if(allDeceased.length === 0) {
+    container.innerHTML = '<i>কোনো মৃত ব্যক্তি যুক্ত হয়নি</i>';
+    return;
+  }
+  allDeceased.forEach((d, i) => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <input type="checkbox" id="dec${i}" value="${i}" style="margin-right:8px;">
+      <label for="dec${i}">
+        <span>${d.deceasedName} (মোট জমি: ${d.totalProperty})</span>
+      </label>
+      <div class="btn-group" style="display:inline-block; margin-left:15px;">
+        <button title="সম্পাদনা" class="btn-small" onclick="editDeceased(${i})">সম্পাদনা</button>
+        <button title="মুছুন" class="btn-small" onclick="deleteDeceased(${i})">মুছুন</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+document.getElementById('printBtn').addEventListener('click', () => {
+  const selectedIndexes = [];
+  allDeceased.forEach((d, i) => {
+    const checkbox = document.getElementById('dec' + i);
+    if (checkbox && checkbox.checked) {
+      selectedIndexes.push(i);
+    }
+  });
+
+  // যদি চেকবক্স সিলেক্ট না হয়
+  if (selectedIndexes.length === 0) {
+    if (typeof editIndex === 'number' && allDeceased[editIndex]) {
+      selectedIndexes.push(editIndex); // ডিফল্ট লোড হওয়া মৃত ব্যক্তির হিসাব প্রিন্ট করবেন
+    } else {
+      alert('প্রিন্ট করার জন্য কমপক্ষে একটি মৃত ব্যক্তির হিসাব সিলেক্ট করুন অথবা একটি মৃত ব্যক্তির ফরম লোড করুন।');
+      return;
+    }
+  }
+
+  let printContents = '';
+  selectedIndexes.forEach(i => {
+    const d = allDeceased[i];
+    printContents += `<h3>${d.deceasedName} এর মৃত্যুতে ওয়ারিশদের প্রাপ্য জমির হিসাব</h3>`;
+    printContents += `<p>মোট জমির পরিমাণ: ${d.totalProperty}</p>`;
+    printContents += `<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+      <thead><tr><th>ওয়ারিশের নাম</th><th>সম্পর্ক</th><th>ভাগ (%)</th><th>জমির পরিমাণ</th></tr></thead><tbody>`;
+    d.result.shares.forEach(s => {
+      printContents += `<tr>
+        <td>${s.name}</td>
+        <td>${s.relation}</td>
+        <td>${(s.share*100).toFixed(2)}</td>
+        <td>${s.amount}</td>
+      </tr>`;
+    });
+    printContents += `</tbody></table><hr>`;
+  });
+
+  const w = window.open('', '', 'width=900,height=700');
+  w.document.write(`<html><head><title>প্রিন্ট</title>
+    <style>
+      body { font-family: 'Hind Siliguri', Kalpurush, Arial, sans-serif; padding: 20px; }
+      h3 { color: #0b3d91; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+      th, td { border: 1px solid #000; padding: 6px 12px; text-align: center; }
+      hr { border: 1px solid #ccc; margin: 30px 0; }
+    </style>
+  </head><body>${printContents}</body></html>`);
+  w.document.close();
+  w.focus();
+  w.print();
+  w.close();
+});
+</script>
+
+</body>
+</html>

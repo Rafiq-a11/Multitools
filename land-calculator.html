@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <title>দলিল ভিত্তিক জমির হিসাব (By Israt Computer)</title>
+  <style>
+    body {
+      font-family: 'Siyam Rupali', Arial, sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+      min-width: 320px;
+      position: relative;
+      min-height: 100vh;
+      padding-bottom: 140px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 5px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #34495e;
+      font-weight: 500;
+    }
+    form, #result, .action-buttons {
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    input[type="text"], input[type="number"], input[type="date"] {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 15px;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+      border-color: #2980b9;
+      outline: none;
+      background: #f0f8ff;
+    }
+    .deed-block, .khatian-block {
+      border: 1.5px dashed #bbb;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      background: #fafafa;
+      border-radius: 8px;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .deed-header {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a5276;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #2980b9;
+      padding-bottom: 6px;
+    }
+    .khatian-block {
+      background: #fff;
+      border: 1px solid #ddd;
+      box-shadow: none;
+    }
+    .dag-group {
+      margin-left: 20px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    button {
+      margin-top: 12px;
+      margin-right: 12px;
+      padding: 10px 18px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+      box-shadow: 0 2px 6px rgba(52,152,219,0.4);
+      user-select: none;
+    }
+    button:hover {
+      background-color: #2c80b4;
+      box-shadow: 0 3px 8px rgba(44,128,180,0.6);
+    }
+    #addDeedBtn {
+      background-color: #27ae60;
+      box-shadow: 0 2px 6px rgba(39,174,96,0.5);
+    }
+    #addDeedBtn:hover {
+      background-color: #1e8449;
+      box-shadow: 0 3px 8px rgba(30,132,73,0.7);
+    }
+    .action-buttons {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14.5px;
+    }
+    th, td {
+      border: 1px solid #999;
+      padding: 10px 8px;
+      text-align: center;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+    th {
+      background: #d6eaf8;
+      font-weight: 700;
+      color: #1a5276;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      form, #result, .action-buttons {
+        padding: 15px;
+      }
+      button {
+        width: 100%;
+        margin: 8px 0;
+      }
+      .dag-group {
+        margin-left: 0;
+      }
+    }
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #2980b9;
+      color: white;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 14px;
+      box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
+      line-height: 1.4;
+      user-select: none;
+    }
+    footer a {
+      color: #f9e79f;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .creator-name {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* নতুন সেভ/লোড UI */
+    #saveNameInput, #loadNameInput {
+      padding: 8px;
+      width: 200px;
+      border-radius: 6px;
+      border: 1.5px solid #ccc;
+      margin-right: 8px;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+    #savedList {
+      max-width: 900px;
+      margin: 15px auto;
+      background: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      max-height: 150px;
+      overflow: auto;
+      text-align: left;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      font-size: 15px;
+      color: #2c3e50;
+    }
+    #savedList ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    #savedList li {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #savedList button {
+      margin: 0;
+      background: #e74c3c;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="goBack()">← মেনুতে ফিরে যান</button>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    function goBack() {
+      ipcRenderer.send('open-tool', 'home.html');
+    }
+   </script>
+</body>
+
+  <h1>দলিল ভিত্তিক জমির হিসাব</h1>
+  <h2>By Israt Computer</h2>
+
+  <form id="landForm" novalidate>
+    <div id="deedContainer"></div>
+    <button type="button" id="addDeedBtn">➕ নতুন দলিল যোগ করুন</button>
+    <button type="submit">📊 হিসাব করুন</button>
+  </form>
+
+  <div id="result"></div>
+
+  <div class="action-buttons" style="max-width:900px; margin:auto; text-align:center;">
+
+    <!-- Save name input -->
+    <input type="text" id="saveNameInput" placeholder="সেভ করার জন্য নাম দিন" />
+    <button id="saveBtn" style="background:#27ae60;">💾 তথ্য সেভ করুন</button>
+
+    <br>
+
+    <!-- Load name input -->
+    <input type="text" id="loadNameInput" placeholder="লোড করার জন্য নাম লিখুন" />
+    <button id="loadBtn" style="background:#2980b9;">📂 তথ্য লোড করুন</button>
+
+    <br>
+
+    <button id="showAllBtn" style="background:#3498db;">📋 সেভ করা সব নাম দেখাও</button>
+
+    <div id="savedList"></div>
+
+  </div>
+
+  <footer>
+    <div><strong>সফটওয়্যার নির্মাতা:</strong> <span class="creator-name">মোঃ রফিকুল ইসলাম</span>, উদ্যোক্তা, ভূমি সেবা সহায়তা কেন্দ্র, পাথরঘাটা</div>
+    <div><strong>সহায়তাকারী প্রতিষ্ঠান:</strong> <a href="mailto:Rafiqhowlader2013@gmail.com">ইসরাত কম্পিউটার, উকিলপট্টি, পাথরঘাটা, বরগুনা</a></div>
+    <div><strong>মোবাইল:</strong> ০১৭৪৪৩৮৯৫৯৮ | <strong>ইমেইল:</strong> <a href="mailto:Rafiqhowlader2013@gmail.com">Rafiqhowlader2013@gmail.com</a></div>
+  </footer>
+
+<script>
+  const deedContainer = document.getElementById('deedContainer');
+  const addDeedBtn = document.getElementById('addDeedBtn');
+  let deedIndex = 0;
+
+  function createDeedBlock(dIndex, data) {
+    const block = document.createElement('div');
+    block.className = 'deed-block';
+
+    block.innerHTML = `
+      <div class="deed-header" style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+        <label style="flex:1;">
+          দলিল নম্বর: <input type="text" name="deedNo${dIndex}" required placeholder="দলিল নম্বর লিখুন" style="width:100%; min-width:150px;" value="${data?.deedNo || ''}" />
+        </label>
+        <label style="flex:1;">
+          তারিখ: <input type="date" name="deedDate${dIndex}" required style="width:100%;" value="${data?.deedDate || ''}" />
+        </label>
+        <button type="button" onclick="this.closest('.deed-block').remove()" style="background:#e74c3c; color:#fff;">🗑️</button>
+      </div>
+      <div class="khatian-list" id="khatianList${dIndex}"></div>
+      <button type="button" onclick="addKhatian(${dIndex})" style="background:#27ae60;">➕ খতিয়ান যোগ করুন</button>
+    `;
+
+    deedContainer.appendChild(block);
+
+    // Add saved khatians if present
+    if(data?.khatians?.length) {
+      data.khatians.forEach((khatianData) => addKhatian(dIndex, khatianData));
+    } else {
+      addKhatian(dIndex); // at least one khatian
+    }
+  }
+
+  function addKhatian(dIndex, data) {
+    const khatianList = document.getElementById(`khatianList${dIndex}`);
+    if (!khatianList) return;
+    const kIndex = khatianList.childElementCount;
+    const khatianDiv = document.createElement('div');
+    khatianDiv.className = 'khatian-block';
+
+    khatianDiv.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px;">
+        <label style="flex:1;">
+          খতিয়ান নম্বর: <input type="text" name="khatian${dIndex}_${kIndex}" required placeholder="খতিয়ান নম্বর" value="${data?.khatianNo || ''}" />
+        </label>
+        <button type="button" onclick="this.closest('.khatian-block').remove()" style="background:#e67e22; color:#fff;">🗑️</button>
+      </div>
+      <label>দাতার পূর্ণ তথ্য (ঐচ্ছিক): <input type="text" name="donor${dIndex}_${kIndex}" placeholder="দাতার নাম, ফোন, ঠিকানা ইত্যাদি" value="${data?.donor || ''}" /></label>
+      <label>ক্রয়কৃত জমি (শতাংশ): <input type="number" step="0.01" name="purchase${dIndex}_${kIndex}" required placeholder="শতাংশ" value="${data?.purchase || ''}" /></label>
+      <div class="dag-list" id="dagList${dIndex}_${kIndex}"></div>
+      <button type="button" onclick="addDag(${dIndex}, ${kIndex})" style="background:#2980b9;">➕ দাগ যোগ করুন</button>
+    `;
+
+    khatianList.appendChild(khatianDiv);
+
+    // Add saved dags if present
+    if(data?.dags?.length) {
+      data.dags.forEach(dagData => addDag(dIndex, kIndex, dagData));
+    } else {
+      addDag(dIndex, kIndex);
+    }
+  }
+
+  function addDag(dIndex, kIndex, data) {
+    const dagList = document.getElementById(`dagList${dIndex}_${kIndex}`);
+    if (!dagList) return;
+    const dagDiv = document.createElement('div');
+    dagDiv.className = 'dag-group';
+    dagDiv.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px;">
+        <label style="flex:1;">
+          দাগ নম্বর: <input type="text" name="dag${dIndex}_${kIndex}[]" required placeholder="দাগ নম্বর" value="${data?.dagNo || ''}" />
+        </label>
+        <label style="flex:1;">
+          দাগে মোট জমি (শতাংশ): <input type="number" step="0.01" name="dagTotal${dIndex}_${kIndex}[]" required placeholder="শতাংশ" value="${data?.dagLand || ''}" />
+        </label>
+        <button type="button" onclick="this.closest('.dag-group').remove()" style="background:#c0392b; color:#fff;">🗑️</button>
+      </div>
+    `;
+    dagList.appendChild(dagDiv);
+  }
+
+  addDeedBtn.addEventListener('click', () => {
+    createDeedBlock(deedIndex);
+    deedIndex++;
+  });
+
+  // প্রথম দলিল যোগ করা
+  addDeedBtn.click();
+
+  document.getElementById('landForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    let resultHTML = '';
+
+    for (let d = 0; d < deedIndex; d++) {
+      const deedNo = formData.get(`deedNo${d}`);
+      const deedDate = formData.get(`deedDate${d}`);
+      if (!deedNo || !deedDate) continue;
+
+      resultHTML += `
+        <div class="deed-block" style="background:#d6eaf8; border-color:#2980b9; box-shadow:none;">
+          <div class="deed-header" style="border-bottom:none; color:#21618c;">
+            দলিল নম্বর: <strong>${deedNo}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
+            তারিখ: ${deedDate}
+          </div>
+      `;
+
+      resultHTML += `
+        <table>
+          <thead>
+            <tr>
+              <th>খতিয়ান</th>
+              <th>দাতার তথ্য</th>
+              <th>দাগ</th>
+              <th>দাগে জমি</th>
+              <th>ক্রয় জমি</th>
+              <th>প্রাপ্ত জমি</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      let k = 0;
+      while (formData.has(`khatian${d}_${k}`)) {
+        const khatianNo = formData.get(`khatian${d}_${k}`);
+        const donor = formData.get(`donor${d}_${k}`) || '';
+        const purchaseLand = parseFloat(formData.get(`purchase${d}_${k}`));
+        const dags = formData.getAll(`dag${d}_${k}[]`);
+        const dagTotals = formData.getAll(`dagTotal${d}_${k}[]`);
+
+        const totalDagLand = dagTotals.reduce((sum, val) => sum + parseFloat(val), 0);
+
+        for (let i = 0; i < dags.length; i++) {
+          const dag = dags[i];
+          const dagTotal = parseFloat(dagTotals[i]);
+          const received = ((purchaseLand * dagTotal) / totalDagLand).toFixed(2);
+
+          resultHTML += `
+            <tr>
+              ${i === 0 ? `<td rowspan="${dags.length}">${khatianNo}</td><td rowspan="${dags.length}">${donor}</td>` : ''}
+              <td>${dag}</td>
+              <td>${dagTotal} শতাংশ</td>
+              <td>${purchaseLand} শতাংশ</td>
+              <td>${received} শতাংশ</td>
+            </tr>
+          `;
+        }
+        k++;
+      }
+
+      resultHTML += `
+          </tbody>
+        </table>
+        </div>
+      `;
+    }
+
+    if (!resultHTML) {
+      resultHTML = '<p style="text-align:center; color:#c0392b; font-weight:600;">কোনো তথ্য পাওয়া যায়নি বা ভুল ইনপুট রয়েছে।</p>';
+    }
+
+    document.getElementById('result').innerHTML = resultHTML;
+  });
+
+  // Save data to localStorage
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const saveName = document.getElementById('saveNameInput').value.trim();
+    if (!saveName) {
+      alert('অনুগ্রহ করে সেভ করার জন্য একটি নাম দিন।');
+      return;
+    }
+    // সংগ্রহ করো ফর্ম ডাটা
+    const formData = new FormData(document.getElementById('landForm'));
+    const dataToSave = {
+      deeds: []
+    };
+
+    for (let d = 0; d < deedIndex; d++) {
+      const deedNo = formData.get(`deedNo${d}`);
+      const deedDate = formData.get(`deedDate${d}`);
+      if (!deedNo || !deedDate) continue;
+
+      const deedObj = {
+        deedNo,
+        deedDate,
+        khatians: []
+      };
+
+      let k = 0;
+      while (formData.has(`khatian${d}_${k}`)) {
+        const khatianNo = formData.get(`khatian${d}_${k}`);
+        if (!khatianNo) break;
+        const donor = formData.get(`donor${d}_${k}`) || '';
+        const purchase = formData.get(`purchase${d}_${k}`) || '';
+        const dags = formData.getAll(`dag${d}_${k}[]`);
+        const dagLands = formData.getAll(`dagTotal${d}_${k}[]`);
+
+        const khatianObj = {
+          khatianNo,
+          donor,
+          purchase,
+          dags: []
+        };
+
+        for (let i = 0; i < dags.length; i++) {
+          khatianObj.dags.push({
+            dagNo: dags[i],
+            dagLand: dagLands[i]
+          });
+        }
+
+        deedObj.khatians.push(khatianObj);
+        k++;
+      }
+      dataToSave.deeds.push(deedObj);
+    }
+
+    // Save as JSON string
+    localStorage.setItem(`landData_${saveName}`, JSON.stringify(dataToSave));
+    alert(`"${saveName}" নামে তথ্য সফলভাবে সেভ করা হয়েছে।`);
+    updateSavedList();
+  });
+
+  // Load data from localStorage
+ // লোড বাটন ক্লিক করলে সেভড তালিকা দেখাবে
+document.getElementById('loadBtn').addEventListener('click', () => {
+  const savedListDiv = document.getElementById('savedList');
+  if (savedListDiv.style.display === 'block') {
+    // তালিকা আগেই খোলা ছিল, এখন লোড করার চেষ্টা করো
+    const loadName = document.getElementById('loadNameInput').value.trim();
+    if (!loadName) {
+      alert('অনুগ্রহ করে লোড করার জন্য নাম দিন অথবা নিচের তালিকা থেকে বেছে নিন।');
+      return;
+    }
+    loadSavedData(loadName);
+  } else {
+    // তালিকা দেখাও
+    updateSavedList(true);
+    savedListDiv.style.display = 'block';
+  }
+});
+
+function loadSavedData(loadName) {
+  const savedKeys = Object.keys(localStorage).filter(key => key.startsWith('landData_'));
+  const savedNames = savedKeys.map(k => k.replace('landData_', ''));
+
+  // মিল খুঁজো (case insensitive)
+  const match = savedNames.find(name => name.toLowerCase() === loadName.toLowerCase());
+
+  if (!match) {
+    alert(`"${loadName}" নামে কোন সেভড তথ্য পাওয়া যায়নি।`);
+    return;
+  }
+
+  const savedData = localStorage.getItem(`landData_${match}`);
+  if (!savedData) {
+    alert(`"${loadName}" নামে কোন সেভড তথ্য পাওয়া যায়নি।`);
+    return;
+  }
+
+  const dataObj = JSON.parse(savedData);
+
+  // ফর্ম পরিষ্কার করে নতুন তথ্য যোগ করো
+  const deedContainer = document.getElementById('deedContainer');
+  deedContainer.innerHTML = '';
+  deedIndex = 0;
+  dataObj.deeds.forEach(deed => {
+    createDeedBlock(deedIndex, deed);
+    deedIndex++;
+  });
+
+  alert(`"${match}" তথ্য সফলভাবে লোড করা হয়েছে।`);
+
+  // লোড শেষে সেভড তালিকা লুকিয়ে দাও
+  document.getElementById('savedList').style.display = 'none';
+}
+
+// savedList আপডেট ফাংশন, সাথে লোড বাটন যুক্ত করে
+function updateSavedList(showLoadButtons = false) {
+  const savedListDiv = document.getElementById('savedList');
+  savedListDiv.innerHTML = '';
+  const keys = Object.keys(localStorage).filter(key => key.startsWith('landData_'));
+
+  if (keys.length === 0) {
+    savedListDiv.innerHTML = '<p style="text-align:center; color:#666;">কোনো সেভ করা তথ্য পাওয়া যায়নি।</p>';
+    return;
+  }
+
+  const ul = document.createElement('ul');
+  keys.forEach(key => {
+    const name = key.replace('landData_', '');
+    const li = document.createElement('li');
+    li.textContent = name;
+
+    // ডিলিট বাটন
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'ডিলিট';
+    delBtn.title = `"${name}" ডিলিট করুন`;
+    delBtn.style.backgroundColor = '#e74c3c';
+    delBtn.style.color = '#fff';
+    delBtn.style.marginLeft = '8px';
+    delBtn.style.border = 'none';
+    delBtn.style.borderRadius = '4px';
+    delBtn.style.padding = '4px 10px';
+    delBtn.style.cursor = 'pointer';
+
+    delBtn.addEventListener('click', () => {
+      if (confirm(`"${name}" তথ্য মুছে ফেলতে চান?`)) {
+        localStorage.removeItem(key);
+        updateSavedList(showLoadButtons);
+        alert(`"${name}" তথ্য মুছে ফেলা হয়েছে।`);
+      }
+    });
+    li.appendChild(delBtn);
+
+    if (showLoadButtons) {
+      // লোড বাটন
+      const loadBtn = document.createElement('button');
+      loadBtn.textContent = 'লোড';
+      loadBtn.title = `"${name}" তথ্য লোড করুন`;
+      loadBtn.style.backgroundColor = '#2980b9';
+      loadBtn.style.color = 'white';
+      loadBtn.style.marginLeft = '8px';
+      loadBtn.style.border = 'none';
+      loadBtn.style.borderRadius = '4px';
+      loadBtn.style.padding = '4px 10px';
+      loadBtn.style.cursor = 'pointer';
+
+      loadBtn.addEventListener('click', () => {
+        document.getElementById('loadNameInput').value = name;
+        loadSavedData(name);
+      });
+      li.appendChild(loadBtn);
+    }
+
+    ul.appendChild(li);
+  });
+
+  savedListDiv.appendChild(ul);
+}
+
+
+  // Optional: প্রিন্ট করার জন্য একটি বাটন এবং ফাংশন
+
+  // প্রিন্ট বাটন ডাইনামিক তৈরি (যদি না থাকে)
+  if (!document.getElementById('printBtn')) {
+    const printBtn = document.createElement('button');
+    printBtn.id = 'printBtn';
+    printBtn.textContent = '🖨️ প্রিন্ট করুন';
+    printBtn.style.backgroundColor = '#16a085';
+    printBtn.style.color = 'white';
+    printBtn.style.marginTop = '15px';
+    printBtn.style.padding = '10px 20px';
+    printBtn.style.border = 'none';
+    printBtn.style.borderRadius = '6px';
+    printBtn.style.cursor = 'pointer';
+    printBtn.style.display = 'block';
+    printBtn.style.marginLeft = 'auto';
+    printBtn.style.marginRight = 'auto';
+
+    document.getElementById('result').after(printBtn);
+
+   printBtn.addEventListener('click', () => {
+  const content = document.getElementById('result').innerHTML;
+  if (!content.trim()) {
+    alert('প্রথমে হিসাব করুন তারপর প্রিন্ট করুন।');
+    return;
+  }
+
+  const printWindow = window.open('', '', 'width=900,height=700');
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>প্রিন্ট আউটপুট</title>
+      <style>
+        @page {
+          margin-left: 0.5in;
+          margin-right: 0.5in;
+          margin-top: 0.5in;
+          margin-bottom: 0.5in;
+        }
+        body {
+          font-family: 'Siyam Rupali', Arial, sans-serif;
+          padding: 0;
+          margin: 0;
+          font-size: 10px;
+          color: #2c3e50;
+          line-height: 1;
+        }
+        h2.filename {
+          text-align: left;
+          margin: 0 0 12px;
+          font-weight: 700;
+          font-size: 14px;
+          color: #1a5276;
+          border-bottom: 1px solid #2980b9;
+          padding-bottom: 6px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+          font-size: 10px;
+          border: 1px solid #999;
+        }
+        th, td {
+          padding: 2px 4px;  /* padding কমানো হলো */
+          text-align: center;
+          font-weight: 500;
+          border: 1px solid #999 !important;
+          vertical-align: middle;
+        }
+        /* দলিল নম্বর ও তারিখ কলাম বোল্ড */
+        th:nth-child(1),
+        td:nth-child(1),
+        th:nth-child(2),
+        td:nth-child(2) {
+          font-weight: 700;
+        }
+        th {
+          background: #d6eaf8;
+          color: #1a5276;
+          font-weight: 600; /* এটার জন্য মূল header গুলো বোল্ড থাকবে */
+        }
+        .deed-block {
+          margin-bottom: 15px;
+          padding: 6px 8px;
+          border-radius: 6px;
+          page-break-inside: avoid;
+          border: none !important;
+        }
+      </style>
+    </head>
+    <body>
+      <h2 class="filename">জমির হিসাব</h2>
+      ${content}
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+  printWindow.close();
+});
+
+
+}
+
+  // প্রথমে সেভড লিস্ট আপডেট করো
+  updateSavedList();
+
+</script>
