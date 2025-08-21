@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <title>Nishat Multi-Tool (Developed by "Nishat Software Lab" is a subsidiary of Israt Computer) </title>
+  <title>Nishat Multi-Tool (Developed by "Nishat Software Lab")</title>
   <style>
     /* সুন্দর ফন্ট ও ব্যাকগ্রাউন্ড */
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bangla&display=swap');
@@ -32,9 +32,17 @@
 
     h1 {
       font-size: 2.4rem;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       font-weight: 700;
       text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+    }
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+    }
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 20px;
     }
 
     button {
@@ -79,22 +87,22 @@
       }
     }
   </style>
-
 </head>
 <body>
   <div class="container">
-    <h1> নিশাত মাল্টি-টুল সফটওয়্যার </h1>
-	<h2>Developed by "Nishat Software Lab"</h2>
-	<h3>This is an organization of Israt Computer</h3>
+    <h1>নিশাত মাল্টি-টুল সফটওয়্যার</h1>
+    <h2>Developed by "Nishat Software Lab"</h2>
+    <h3>This is an organization of Israt Computer</h3>
+
     <button onclick="openTool('pdf-organizer.html')">PDF অর্গানাইজার</button>
     <button onclick="openTool('inheritance-calculator.html')">ইসলামী ফরায়েজ ক্যালকুলেটর</button>
-    <button onclick="openTool('land-calculator.html')"> দলিল ভিত্তিক জমির হিসাব ক্যালকুলেটর</button>
+    <button onclick="openTool('land-calculator.html')">দলিল ভিত্তিক জমির হিসাব ক্যালকুলেটর</button>
   </div>
 
   <script>
-    const { ipcRenderer } = require('electron');
+    // Electron ব্যবহার নেই, সরাসরি নতুন পেজে রিডাইরেক্ট
     function openTool(page) {
-      ipcRenderer.send('open-tool', page);
+      window.location.href = page;
     }
   </script>
 </body>
